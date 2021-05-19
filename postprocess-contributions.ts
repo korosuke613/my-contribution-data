@@ -15,14 +15,22 @@ console.log(json);
 
 // Step 2: Filter specific data we want to keep and write to a new JSON file
 const weeks: {
-  contributionDays: { contributionCount: number; date: string }[];
+  contributionDays: {
+    contributionCount: number;
+    date: string;
+    contributionLevel: string;
+    color: string;
+  }[];
 }[] = json.data.user.contributionsCollection.contributionCalendar.weeks;
 
 const contributionDays = weeks.map((week) => (
   week.contributionDays.map((day) => ({
-    contributionCount: day.contributionCount,
     date: day.date,
-    url: `https://github.com/korosuke613?tab=overview&from=${day.date}&to=${day.date}`
+    contributionLevel: day.contributionLevel,
+    contributionCount: day.contributionCount,
+    color: day.color,
+    url:
+      `https://github.com/korosuke613?tab=overview&from=${day.date}&to=${day.date}`,
   }))
 )).flat();
 
