@@ -5,7 +5,7 @@ on:
       - main
     paths:
       - .github/workflows/contributions.yml
-      - ./postprocess-contribution.js
+      - ./postprocess-contributions.js
   workflow_dispatch: null
   schedule:
     - cron: "0 0 * * *"
