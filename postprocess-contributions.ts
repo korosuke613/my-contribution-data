@@ -26,11 +26,11 @@ const weeks: {
 const contributionDays = weeks.map((week) => (
   week.contributionDays.map((day) => ({
     date: day.date,
-    contributionLevel: day.contributionLevel,
     contributionCount: day.contributionCount,
-    color: day.color,
+    contributionLevel: day.contributionLevel,
     url:
       `https://github.com/korosuke613?tab=overview&from=${day.date}&to=${day.date}`,
+    color: day.color,
   }))
 )).flat();
 
