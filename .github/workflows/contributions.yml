@@ -8,7 +8,7 @@ on:
       - ./postprocess-contribution.js
   workflow_dispatch: null
   schedule:
-    - cron: "*/5 * * * *"
+    - cron: "0 0 * * *"
 jobs:
   scheduled:
     runs-on: ubuntu-latest
@@ -40,7 +40,7 @@ jobs:
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           
-          git add contribution.json contribution-days.json
+          git add contribution-days.json
           git commit -m "Flat: latest contribution data ($NOW_DATE_TIME)"
           git pull
           git push origin main
