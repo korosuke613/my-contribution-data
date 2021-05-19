@@ -1,0 +1,46 @@
+name: Flat
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/contributions.yml
+      - ./postprocess-contribution.js
+  workflow_dispatch: null
+  schedule:
+    - cron: "*/5 * * * *"
+jobs:
+  scheduled:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v2
+      - name: Setup deno
+        uses: denoland/setup-deno@main
+        with:
+          deno-version: v1.x        
+      - name: Fetch data
+        env:
+          GH_READ_USER_TOKEN: ${{ secrets.GH_READ_USER_TOKEN }}
+        run: |
+          curl -f -o contribution.json --request POST \
+            --url https://api.github.com/graphql \
+            --header "Authorization: Bearer $GH_READ_USER_TOKEN" \
+            --header 'Content-Type: application/json' \
+            --data '{"query":"{ user(login: \"korosuke613\") { name contributionsCollection { contributionCalendar { totalContributions weeks { contributionDays { contributionCount date } } } } }}"}'
+          cat contribution.json
+      - name: generate contribution days
+        run: |
+          deno run --unstable --allow-read --allow-write postprocess-contributions.ts contribution.json
+      - name: git push
+        env:
+          GH_READ_USER_TOKEN: ${{ secrets.GH_READ_USER_TOKEN }}
+        run: |
+          export NOW_DATE_TIME=$(date '+%Y-%m-%dT%H:%M:%S%z')
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          
+          git add contribution.json contribution-days.json
+          git commit -m "Flat: latest contribution data ($NOW_DATE_TIME)"
+          git pull
+          git push origin main
